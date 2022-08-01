@@ -1,9 +1,14 @@
 package com.codestates.controller;
 
+import com.codestates.auth.PrincipalDetails;
 import com.codestates.model.Member;
 import com.codestates.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,5 +61,40 @@ public class IndexController {
         memberRepository.save(member);
 
         return "redirect:/login";
+    }
+
+    @GetMapping("/loginTest")
+    public @ResponseBody String loginTest(Authentication authentication){
+        System.out.println("##### login Test1 #####");
+
+        if (authentication.getPrincipal() instanceof PrincipalDetails == false){
+            return "당신은 OAuth2 로그인 하였습니다. \"loginTest3\" 로 이동하세요";
+        }
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        System.out.println("authentication : " + principalDetails.getMember());
+        return "세션 정보 확인";
+    }
+
+    @GetMapping("/loginTest2")
+    public @ResponseBody String loginTest2(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        System.out.println("##### login Test2 #####");
+
+        if (principalDetails == null){
+            return "당신은 OAuth2 로그인 하였습니다. \"loginTest3\" 로 이동하세요";
+        }
+
+        System.out.println("userDetails : " + principalDetails.getMember());
+        return "세션 정보 확인2";
+    }
+
+    @GetMapping("/loginTest3")
+    public  @ResponseBody String loginOAuthTest(Authentication authentication,
+                                                @AuthenticationPrincipal OAuth2User oauth){
+        System.out.println("##### OAuth login Test #####");
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        System.out.println("authenticaion : " + oAuth2User.getAttributes());
+        System.out.println("oauth2User : " + oauth.getAttributes());
+        return "세션 정보 확인3";
     }
 }

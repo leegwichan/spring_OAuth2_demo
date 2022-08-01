@@ -17,6 +17,10 @@ public class Member {
     private Long id;
     private String username;
     private String password;
+
+    private String provider;
+    private String providerId;
+
     private String email;
     private String role;
     private LocalDateTime createdAt = LocalDateTime.now();
