@@ -4,11 +4,8 @@ import com.codestates.model.Member;
 import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -16,9 +13,17 @@ import java.util.Map;
 @Data
 public class PrincipalDetails implements UserDetails, OAuth2User {
     private Member member;
+    private Map<String, Object> attributes;
 
+    // 일반 로그인
     public PrincipalDetails(Member member){
         this.member = member;
+    }
+
+    // 추가 로그인
+    public PrincipalDetails(Member member, Map<String, Object> attributes){
+        this.member = member;
+        this.attributes = attributes;
     }
 
     @Override
@@ -65,7 +70,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     @Override
     public Map<String, Object> getAttributes() {
-        return null;
+        return attributes;
     }
 
     @Override

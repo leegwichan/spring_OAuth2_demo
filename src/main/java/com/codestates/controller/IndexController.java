@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,7 +23,13 @@ public class IndexController {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/")
-    public @ResponseBody String index() {
+    public String index(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+
+        try {
+            if(principalDetails.getUsername() != null) {
+                model.addAttribute("username", principalDetails.getUsername());
+            }
+        } catch (NullPointerException e) {}
         return "index";
     }
 
@@ -96,5 +103,11 @@ public class IndexController {
         System.out.println("authenticaion : " + oAuth2User.getAttributes());
         System.out.println("oauth2User : " + oauth.getAttributes());
         return "세션 정보 확인3";
+    }
+
+    @GetMapping("/loginTest4")
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        System.out.println(principalDetails.getMember());
+        return "/loginTest4";
     }
 }
