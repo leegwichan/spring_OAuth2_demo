@@ -6,6 +6,7 @@ import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+// mustache → html 사용할 수 있도록 설정
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override

@@ -22,6 +22,7 @@ public class IndexController {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    // index.html 을 띄움
     @GetMapping("/")
     public String index(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
 
@@ -33,6 +34,7 @@ public class IndexController {
         return "index";
     }
 
+    // 접근 제한이 걸린 API
     @GetMapping("/user")
     public @ResponseBody String user() {
         return "user";
@@ -58,6 +60,7 @@ public class IndexController {
         return "joinForm";
     }
 
+    // 로그인 메서드
     @PostMapping("/join")
     public String join(Member member) {
         member.setRole("ROLE_USER");
@@ -71,43 +74,23 @@ public class IndexController {
     }
 
     @GetMapping("/loginTest")
-    public @ResponseBody String loginTest(Authentication authentication){
-        System.out.println("##### login Test1 #####");
+    public @ResponseBody String loginTest(Authentication authentication,
+                                          @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                          @AuthenticationPrincipal OAuth2User oauth,
+                                          Model model){
+        System.out.println("##### login Test #####");
 
-        if (authentication.getPrincipal() instanceof PrincipalDetails == false){
-            return "당신은 OAuth2 로그인 하였습니다. \"loginTest3\" 로 이동하세요";
-        }
+        // 로그인한 유저의 정보를 확인 가능 (PrincipalDetails 에서 정보 가져옴)
+        PrincipalDetails getPrincipalDetails = (PrincipalDetails) authentication.getPrincipal();
+        System.out.println("member : " + getPrincipalDetails.getMember());
+        System.out.println("member : " + principalDetails.getMember());
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        System.out.println("authentication : " + principalDetails.getMember());
-        return "세션 정보 확인";
-    }
-
-    @GetMapping("/loginTest2")
-    public @ResponseBody String loginTest2(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        System.out.println("##### login Test2 #####");
-
-        if (principalDetails == null){
-            return "당신은 OAuth2 로그인 하였습니다. \"loginTest3\" 로 이동하세요";
-        }
-
-        System.out.println("userDetails : " + principalDetails.getMember());
-        return "세션 정보 확인2";
-    }
-
-    @GetMapping("/loginTest3")
-    public  @ResponseBody String loginOAuthTest(Authentication authentication,
-                                                @AuthenticationPrincipal OAuth2User oauth){
-        System.out.println("##### OAuth login Test #####");
+        // OAuth2 로그인한 유저의 정보 (Google 토큰 정보) 확인 가능
+        // formLogin한 PrincipalDetails는 attribute를 이용하지 않음
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         System.out.println("authenticaion : " + oAuth2User.getAttributes());
-        System.out.println("oauth2User : " + oauth.getAttributes());
-        return "세션 정보 확인3";
-    }
+        System.out.println("authenticaion : " + oauth.getAttributes());
 
-    @GetMapping("/loginTest4")
-    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        System.out.println(principalDetails.getMember());
-        return "/loginTest4";
+        return "console 창 및 IndexController.loginTest() 확인";
     }
 }

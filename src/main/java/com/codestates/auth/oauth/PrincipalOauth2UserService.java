@@ -1,4 +1,4 @@
-package com.codestates.config.oauth;
+package com.codestates.auth.oauth;
 
 import com.codestates.auth.PrincipalDetails;
 import com.codestates.model.Member;
@@ -19,10 +19,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     @Override
     // 로그인 후, 후처리 담당하는 메서드
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException{
-        System.out.println("userRequest : " + userRequest);
-
-        // PrincipalDetailService를 보니, Member를 저장하는 메서드를 만들어야 할듯...
-
 
         // userRequest에 담긴 정보를 확인할 수 있는 메서드
         // userRequest.getClientRegistration();
